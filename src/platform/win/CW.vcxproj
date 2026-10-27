@@ -52,6 +52,49 @@
       <ExcludedFromBuild Condition="'$(XcrtEnabled)'!='true' or '$(Platform)'!='x64'">true</ExcludedFromBuild>
     </MASM>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\native_dispatch.c" /><ClCompile Include="..\..\native_stream_source.c" />
+    <ClCompile Include="..\..\batch_1.c" />
+    <ClCompile Include="..\..\batch_2.c" />
+    <ClCompile Include="..\..\batch_3.c" />
+    <ClCompile Include="..\..\batch_4.c" />
+    <ClCompile Include="..\..\batch_5.c" />
+    <ClCompile Include="..\..\batch_6.c" />
+    <ClCompile Include="..\..\batch_7.c" />
+    <ClCompile Include="..\..\batch_8.c" />
+    <ClCompile Include="..\..\batch_9.c" />
+    <ClCompile Include="..\..\batch_10.c" />
+    <ClCompile Include="..\..\batch_11.c" />
+    <ClCompile Include="..\..\batch_12.c" />
+    <ClCompile Include="..\..\batch_13.c" />
+    <ClCompile Include="..\..\batch_14.c" />
+    <ClCompile Include="..\..\batch_15.c" />
+    <ClCompile Include="..\..\batch_16.c" />
+    <ClCompile Include="..\..\batch_17.c" />
+    <ClCompile Include="..\..\batch_18.c" />
+    <ClCompile Include="..\..\batch_19.c" />
+    <ClCompile Include="..\..\batch_20.c" />
+    <ClCompile Include="..\..\batch_21.c" />
+    <ClCompile Include="..\..\batch_22.c" />
+    <ClCompile Include="..\..\batch_23.c" />
+    <ClCompile Include="..\..\batch_24.c" />
+    <ClCompile Include="..\..\batch_25.c" />
+    <ClCompile Include="..\..\batch_26.c" />
+    <ClCompile Include="..\..\batch_27.c" />
+    <ClCompile Include="..\..\batch_28.c" />
+    <ClCompile Include="..\..\batch_29.c" />
+    <ClCompile Include="..\..\batch_30.c" />
+    <ClCompile Include="..\..\batch_31.c" />
+    <ClCompile Include="..\..\batch_32.c" />
+    <ClCompile Include="..\..\batch_33.c" />
+    <ClCompile Include="..\..\batch_34.c" />
+    <ClCompile Include="..\..\batch_35.c" />
+    <ClCompile Include="..\..\batch_36.c" />
+    <ClCompile Include="..\..\batch_37.c" />
+    <ClCompile Include="..\..\..\..\xport\src\xport_fmv.c" />
+    <ClCompile Include="..\..\..\..\xport\src\psx_font.c" />
+    <ClInclude Include="..\..\game_functions.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets"><Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" /></ImportGroup>
 <ItemGroup><ClCompile Include="..\..\..\..\xport\src\psx_mdec.c" /><ClCompile Include="..\..\..\..\xport\src\psx_press.c" /><ClCompile Include="..\..\..\..\xport\src\psx_vlc.c" /><ClCompile Include="..\..\..\..\xport\src\psx_stream.c" /></ItemGroup>
@@ -64,5 +107,8 @@
   </Target>
   <Target Name="XportRecordNativeArch" AfterTargets="Link">
     <WriteLinesToFile File="$(ProjectDir)..\..\..\_build\native-$(Configuration).arch" Lines="$(NativeArch)" Overwrite="true" />
+  </Target>
+  <Target Name="RequireXcrtForRelease" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(Configuration)'=='Release' and '$(XcrtEnabled)'!='true'" Text="Colony Wars Release requires XCRT" />
   </Target>
 </Project>
