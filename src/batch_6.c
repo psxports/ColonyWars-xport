@@ -1594,7 +1594,6 @@ uint32 game_main_loop(void)
     {
         allocation = overlay_load("FRONT", 0);
         video_init_front();
-        xport_guest_call0(0x8008DFE4);
     }
     resource_init_index();
     sound_init_level(0, 255);

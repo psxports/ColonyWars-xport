@@ -55,7 +55,7 @@
     </MASM>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\native_dispatch.c" /><ClCompile Include="..\..\native_stream_source.c" /><ClCompile Include="..\..\native_stream_files.c" />
+    <ClCompile Include="..\..\native_dispatch.c" /><ClCompile Include="..\..\native_stream_source.c" /><ClCompile Include="..\..\native_stream_files.c" /><ClCompile Include="..\..\native_frontend.c" />
     <ClCompile Include="..\..\batch_1.c" />
     <ClCompile Include="..\..\batch_2.c" />
     <ClCompile Include="..\..\batch_3.c" />

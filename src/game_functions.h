@@ -5,6 +5,14 @@
 #include "psx.h"
 #include "psx_spu.h"
 
+void game_load_startup_save(void);
+int game_restore_startup_save(void);
+sint32 game_autosave(void);
+sint32 game_autosave_options(void);
+sint32 game_frontend_route_screen(sint32 screen);
+void game_frontend_menu_ready(void);
+void game_wait_hangar_departure(void);
+
 #if defined(AP_WEB) && !defined(CW_EXTRACTED_XA)
 #error Web requires extracted XA streams
 #endif

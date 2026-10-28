@@ -1179,6 +1179,8 @@ sint32 front_run(void)
     front_initialize_video();
     front_initialize_card();
     front_initialize_character_map();
+    if (game_restore_startup_save())
+        goto run_menu;
     mode = r_u16(0x80059610);
     if (mode >= 1 && mode <= 4)
     {
@@ -1321,6 +1323,7 @@ sint32 front_run(void)
     if (save_changed == 1)
         front_snapshot_settings(0x80010258);
 run_menu:
+    game_autosave();
     front_reset_code_text();
     w_u32(0x800F3148, 1);
     sound_reset_voices();
@@ -1479,7 +1482,7 @@ void front_menu_loop(void)
     uint32 allocation, first, second, third, pointer, object, target;
     uint32 old_buttons, buttons, controller, panel, voice, flags;
     uint32 source_a, source_b, words[3], offset, index;
-    sint32 chapter, next_screen, idle_frames, ready, text_y;
+    sint32 chapter, next_screen, idle_frames, ready;
     sint32 selected, cycle;
     FUNCTION_MARKER(0x8008E504, "FRONT.OVL");
     w_u32(0x80053670, 0);
@@ -1635,6 +1638,7 @@ void front_menu_loop(void)
         if (pointer)
             front_free_screen_list(pointer);
         idle_frames = 0;
+        game_frontend_menu_ready();
         w_u16(0x801132A4, 0);
         w_u16(0x800B737C, 0);
         w_u32(0x800F314C, 0);
@@ -1679,10 +1683,6 @@ void front_menu_loop(void)
             front_render_begin();
             front_draw_text_panel(r_u32(0x800F312C));
             w_u32(0x800FB870, 0);
-            front_update_connection_label();
-            text_y = r_u32(0x800311C0) ? 472 : 440;
-            if (r_u8(0x800F3084))
-                front_draw_colored_text(0x800F3084, 50, text_y, 0x808080);
             object = r_u32(0x8010D0E0);
             if (object)
                 front_draw_screen_list(object);
@@ -1750,6 +1750,7 @@ void front_menu_loop(void)
             psx_dispatch_guest_call(target, 1, object, 0, 0);
             object = r_u32(object + 0x10);
         }
+        game_autosave();
         if (!r_s16(0x80114264) && r_u32(0x800F3140))
         {
             selected = r_s32(0x800313C8);

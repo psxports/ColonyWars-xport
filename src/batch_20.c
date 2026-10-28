@@ -1054,8 +1054,10 @@ void game_run_pause_menu(void)
         callback = r_u32(menu + 0x2Cu);
         psx_dispatch_guest_call(callback, 0u, 0u, 0u, 0u);
         next = r_u32(0x80124C48u);
-        if (next == 0u)
+        if (next == 0u) {
+            game_autosave_options();
             return;
+        }
         menu = r_u32(0x80124C00u);
         next_depth = r_u8(next + 9u);
         current_depth = r_u8(menu + 9u);

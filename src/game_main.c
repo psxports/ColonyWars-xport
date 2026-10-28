@@ -31,5 +31,6 @@ void xport_main(void)
 {
     game_load_initial_storage();
     game_bind_native_callbacks();
+    game_load_startup_save();
     game_entry();
 }

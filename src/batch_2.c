@@ -1281,6 +1281,7 @@ sint32 scene_stop_loading(void)
     FUNCTION_MARKER(0x80012E44, "SLUS_005.43");
     if (!r_u32(0x800310A4))
         return 0;
+    game_wait_hangar_departure();
     w_u32(0x800310A8, 1);
     while (r_s32(0x800310B0) < 3000)
     {

@@ -915,36 +915,7 @@ void front_show_startup_image(void)
 
 void front_intro(void)
 {
-    uint32 pal, rate, index, previous, buttons, pressed;
     FUNCTION_MARKER(0x8008E05C, "FRONT.OVL");
-    VSyncCallbackPSX(0x8008DA54);
-    pal = r_u32(0x800311C0);
-    w_u32(0x800F314C, 1);
-    w_u32(0x8004616C, 0);
-    rate = pal ? 50 : 60;
-    SetDispMask(0);
-    front_show_startup_image();
-    for (index = 0; index < (rate << 1); ++index)
-        VSync(0);
-    index = 0;
-    do
-    {
-        VSync(0);
-        previous = r_u32(0x8004616C);
-        w_u32(0x80053678, previous);
-        buttons = (uint32)pad_update(0);
-        previous = r_u32(0x80053678);
-        w_u32(0x8004616C, buttons);
-        pressed = (buttons ^ previous) & buttons;
-        w_u32(0x80053684, pressed);
-        ++index;
-        if (pressed & 0x40)
-        {
-            sound_play_sample_pitch(11, 128);
-            sound_play_sample_pitch(11, 128);
-            index = (rate << 3) - rate + 1;
-        }
-    } while (index < (rate << 2));
     SetDispMask(0);
     VSyncCallbackPSX(0);
     w_u32(0x800F314C, 0);
@@ -956,9 +927,7 @@ void front_intro(void)
     {
         w_u32(0x800B7274, 1);
         w_u32(0x800B7270, 0);
-        front_play_movie_with_sound_reset("\\LOGO.STR;1", 30);
-        if (r_u32(0x800B7274) == 1)
-            front_play_movie_with_sound_reset("\\INTRO.STR;1", 30);
+        front_play_movie_with_sound_reset("\\INTRO.STR;1", 30);
         VSync(0);
         SetDispMask(0);
         w_u32(0x800B7274, 0);

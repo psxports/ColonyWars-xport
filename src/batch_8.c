@@ -96,6 +96,8 @@ void front_select_screen(sint32 screen)
     uint32 index, descriptor, type, kind, in_pane;
     sint32 signed_type;
     FUNCTION_MARKER(0x8008B85C, "FRONT.OVL");
+    screen = game_frontend_route_screen(screen);
+    w_u16(0x80114264, (uint16)screen);
     for (index = 0; index < 15; ++index)
         w_u8(0x800F2FB6 - index, 0);
     w_u32(0x801132A0, 0);
