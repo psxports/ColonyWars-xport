@@ -377,6 +377,8 @@ void front_free_briefing_view(void);
 void front_update_ship_screen(void);
 uint32 front_erase_selected_card_media(void);
 uint32 front_probe_selected_card_media(void);
+void front_copy_selected_system_name(void);
+void front_snapshot_display_options(void);
 uint32 game_initialize_player_weapon_slots(void);
 uint32 game_draw_player_view(void);
 uint32 game_copy_player_view_transform(void);
@@ -1115,6 +1117,9 @@ void game_tick_credits_controller(uint32 object);
 void game_update_mission_script_controller(uint32 object);
 void game_update_pause_settings(void);
 uint32 game_script_increment_data_count(void);
+void game_update_transition_warp_controller(uint32 object);
+void game_update_ring_glow(uint32 object);
+void game_update_missile_target_training(uint32 object);
 uint32 game_init_defaults(void);
 sint32 resource_clear_flags(void);
 sint32 sound_init_loops(void);
@@ -1403,6 +1408,18 @@ sint32 system_set_graph_queue(sint32 enabled);
 uint32 system_get_odd_field(void);
 uint32 system_stop_callbacks(void);
 uint32 system_restart_callbacks(void);
+uint32 render_submit_frame(void);
+uint32 render_set_full_height(uint32 width);
+uint32 render_set_reduced_height(uint32 width);
+uint32 light_scale_scene(uint32 scale);
+sint32 sound_select_mode(uint32 mode);
+void sound_shutdown(void);
+sint32 sound_free_sample(uint32 sample);
+sint32 sound_set_voice_left(uint32 voice, uint32 level);
+sint32 sound_set_voice_right(uint32 voice, uint32 level);
+uint32 stream_request_position(uint32 position, uint32 sectors, uint32 asset);
+uint32 stream_update(void);
+uint32 object_extract_angles(uint32 destination, uint32 object);
 
 static uint32 game_dispatch_main(uint32 target, uint32 count, uint32 a0, uint32 a1, uint32 a2)
 {
@@ -2342,6 +2359,43 @@ static uint32 game_dispatch_main(uint32 target, uint32 count, uint32 a0, uint32 
     case 0x800729B8:
         if (count > 3) game_unbound_native_call(target, count);
         return (uint32)system_restart_callbacks();
+    case 0x80021BBC:
+        if (count > 3) game_unbound_native_call(target, count);
+        return (uint32)render_submit_frame();
+    case 0x80022AB8:
+        if (count < 1 || count > 3) game_unbound_native_call(target, count);
+        return (uint32)render_set_full_height((uint32)a0);
+    case 0x80022B78:
+        if (count < 1 || count > 3) game_unbound_native_call(target, count);
+        return (uint32)render_set_reduced_height((uint32)a0);
+    case 0x80023288:
+        if (count < 1 || count > 3) game_unbound_native_call(target, count);
+        return (uint32)light_scale_scene((uint32)a0);
+    case 0x80024C14:
+        if (count < 1 || count > 3) game_unbound_native_call(target, count);
+        return (uint32)sound_select_mode((uint32)a0);
+    case 0x80024C54:
+        if (count > 3) game_unbound_native_call(target, count);
+        sound_shutdown();
+        return 0;
+    case 0x80025108:
+        if (count < 1 || count > 3) game_unbound_native_call(target, count);
+        return (uint32)sound_free_sample((uint32)a0);
+    case 0x800259D8:
+        if (count < 2 || count > 3) game_unbound_native_call(target, count);
+        return (uint32)sound_set_voice_left((uint32)a0, (uint32)a1);
+    case 0x80025A50:
+        if (count < 2 || count > 3) game_unbound_native_call(target, count);
+        return (uint32)sound_set_voice_right((uint32)a0, (uint32)a1);
+    case 0x800282F4:
+        if (count < 3 || count > 3) game_unbound_native_call(target, count);
+        return (uint32)stream_request_position((uint32)a0, (uint32)a1, (uint32)a2);
+    case 0x80028C8C:
+        if (count > 3) game_unbound_native_call(target, count);
+        return (uint32)stream_update();
+    case 0x8002CFC4:
+        if (count < 2 || count > 3) game_unbound_native_call(target, count);
+        return (uint32)object_extract_angles((uint32)a0, (uint32)a1);
     default:
         game_unbound_native_call(target, count);
         return 0;
@@ -3698,6 +3752,14 @@ static uint32 game_dispatch_front(uint32 target, uint32 count, uint32 a0, uint32
     case 0x800A2AC8:
         if (count > 3) game_unbound_native_call(target, count);
         return (uint32)front_probe_selected_card_media();
+    case 0x800B0828:
+        if (count > 3) game_unbound_native_call(target, count);
+        front_copy_selected_system_name();
+        return 0;
+    case 0x800A75E0:
+        if (count > 3) game_unbound_native_call(target, count);
+        front_snapshot_display_options();
+        return 0;
     default:
         game_unbound_native_call(target, count);
         return 0;
@@ -6443,6 +6505,18 @@ static uint32 game_dispatch_game(uint32 target, uint32 count, uint32 a0, uint32 
     case 0x80093C24:
         if (count > 3) game_unbound_native_call(target, count);
         return (uint32)game_script_increment_data_count();
+    case 0x800E6A24:
+        if (count < 1 || count > 3) game_unbound_native_call(target, count);
+        game_update_transition_warp_controller((uint32)a0);
+        return 0;
+    case 0x800E5BD0:
+        if (count < 1 || count > 3) game_unbound_native_call(target, count);
+        game_update_ring_glow((uint32)a0);
+        return 0;
+    case 0x800E8C64:
+        if (count < 1 || count > 3) game_unbound_native_call(target, count);
+        game_update_missile_target_training((uint32)a0);
+        return 0;
     default:
         game_unbound_native_call(target, count);
         return 0;

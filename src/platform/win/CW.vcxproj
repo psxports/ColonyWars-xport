@@ -11,9 +11,11 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings"><Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" /></ImportGroup>
   <PropertyGroup>
+    <UseExtractedXa Condition="'$(UseExtractedXa)'==''">true</UseExtractedXa>
     <UseXcrt Condition="'$(UseXcrt)'==''">true</UseXcrt>
     <XcrtEnabled Condition="'$(Configuration)'=='Release' and '$(UseXcrt)'=='true'">true</XcrtEnabled>
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(UseExtractedXa)'=='true'"><ClCompile><PreprocessorDefinitions>CW_EXTRACTED_XA;%(PreprocessorDefinitions)</PreprocessorDefinitions></ClCompile></ItemDefinitionGroup>
   <PropertyGroup><NativeArch Condition="'$(Platform)'=='Win32'">x86</NativeArch><NativeArch Condition="'$(Platform)'=='x64'">x64</NativeArch><OutDir>$(ProjectDir)..\..\..\bin\</OutDir><IntDir>$(ProjectDir)..\..\..\_build\$(NativeArch)\$(Configuration)\</IntDir><LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory><LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand><DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor><LinkIncremental>false</LinkIncremental></PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'"><TargetName>CW_debug</TargetName></PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'"><TargetName>CW</TargetName></PropertyGroup>
@@ -53,7 +55,7 @@
     </MASM>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\native_dispatch.c" /><ClCompile Include="..\..\native_stream_source.c" />
+    <ClCompile Include="..\..\native_dispatch.c" /><ClCompile Include="..\..\native_stream_source.c" /><ClCompile Include="..\..\native_stream_files.c" />
     <ClCompile Include="..\..\batch_1.c" />
     <ClCompile Include="..\..\batch_2.c" />
     <ClCompile Include="..\..\batch_3.c" />

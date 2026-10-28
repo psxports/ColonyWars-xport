@@ -1922,8 +1922,10 @@ sint32 sound_play_sample_full(uint32 sample)
 
 uint32 resource_load_sector_index(const char *index_name, const char *data_name)
 {
+#ifndef CW_EXTRACTED_XA
     char path[64];
     CdlFILE file;
+#endif
     uint32 size;
     uint32 buffer;
     uint32 entry;
@@ -1935,11 +1937,17 @@ uint32 resource_load_sector_index(const char *index_name, const char *data_name)
     size = resource_file_size(index_name);
     buffer = heap_alloc_back(size);
     resource_load_into(index_name, buffer);
+#ifdef CW_EXTRACTED_XA
+    if (!game_stream_package_base(data_name, &base_sector))
+        return buffer;
+    entry = buffer + 8;
+#else
     sprintf(path, "\\%s;1", data_name);
     entry = buffer + 8;
     if (!CdSearchFile(&file, path))
         return buffer;
     base_sector = (uint32)CdPosToInt(&file.pos);
+#endif
     if (r_s32(buffer + 4) <= 0)
         return buffer;
     index = 0;

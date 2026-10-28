@@ -5,6 +5,19 @@
 #include "psx.h"
 #include "psx_spu.h"
 
+#if defined(AP_WEB) && !defined(CW_EXTRACTED_XA)
+#error Web requires extracted XA streams
+#endif
+
+#ifdef CW_EXTRACTED_XA
+sint32 game_stream_files_reset(void);
+sint32 game_stream_file_start(uint32 record);
+sint32 game_stream_file_ready(void);
+uint32 game_stream_file_remaining(void);
+void game_stream_file_advance(uint32 record);
+sint32 game_stream_package_base(const char *name, uint32 *sector);
+#endif
+
 /* Guest addresses remain integers at game boundaries */
 void front_build_model_bounds(uint32 model, uint32 bounds);
 uint32 front_create_model_object(sint32 model_index, uint32 x, uint32 y, uint32 z, uint32 type);

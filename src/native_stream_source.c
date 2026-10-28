@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef CW_EXTRACTED_XA
 typedef struct NATIVE_STREAM_ASSET
 {
     const char *path;
@@ -82,8 +83,13 @@ static CdlFILE *native_stream_search_file(void *context, CdlFILE *result, const 
     return NULL;
 }
 
+#endif
+
 sint32 game_mount_stream_source(void)
 {
+#ifdef CW_EXTRACTED_XA
+    return game_stream_files_reset();
+#else
     XPORT_CD_SOURCE source;
     uint32 index;
     uint8 mode = 0xC8;
@@ -106,6 +112,7 @@ sint32 game_mount_stream_source(void)
         return 0;
     native_stream_mounted = 1;
     return CdControl(CdlSetmode, &mode, NULL);
+#endif
 }
 
 sint32 game_validate_data_disc(void)

@@ -936,7 +936,7 @@ void game_config_set_player_launch(const uint32 *arguments, uint32 first)
     uint32 object, value;
     FUNCTION_MARKER(0x800945F4, "GAME.OVL");
     object = r_u32(0x80040FDC);
-    w_u32(object + 0x40, 0x8008A9CC);
+    w_u32(object + 0x40, 0x8007A9CC);
     value = (uint32)game_level_argument_integer_native(arguments[first + 1]);
     object = r_u32(0x80040FDC);
     w_u32(object + 0xDC, value);

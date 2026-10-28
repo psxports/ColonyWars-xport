@@ -1940,9 +1940,11 @@ uint32 front_initialize_ship_view(void)
     front_load_preview_configuration();
     w_u32(0x800BC624, 11);
     w_u8(0x800BC628, 1);
+#ifndef CW_EXTRACTED_XA
     while (!CdRead2(456))
     {
     }
+#endif
     value = r_u32(0x800BC600);
     width = r_u32(0x800BC608);
     w_u32(0x800BC600, value + 4);

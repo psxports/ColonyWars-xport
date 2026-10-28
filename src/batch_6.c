@@ -715,8 +715,10 @@ uint32 render_submit_frame(void)
 
 uint32 stream_update(void)
 {
+#ifndef CW_EXTRACTED_XA
     CdlLOC position;
     uint8 filter[2];
+#endif
     uint32 standard;
     uint32 pause;
     uint32 state;
@@ -742,7 +744,9 @@ uint32 stream_update(void)
     sint32 increment;
     sint32 volume;
     sint32 duration;
+#ifndef CW_EXTRACTED_XA
     uint8 status;
+#endif
     FUNCTION_MARKER(0x80028C8C, "SLUS_005.43");
     standard = r_u32(0x800311C0);
     FUNCTION_MARKER(0x80028C94, "SLUS_005.43");
@@ -917,6 +921,10 @@ select_current:
     {
         w_u32(0x80040FF8, 0);
         SsSetSerialVol(0, 0, 0);
+#ifdef CW_EXTRACTED_XA
+        game_stream_files_reset();
+        return r_u32(0x80041EF0) != 1 ? 1 : 21;
+#else
         if (r_u32(0x80041EF0) != 1)
             return 1;
         CdControlF(1, NULL);
@@ -925,12 +933,14 @@ select_current:
         w_u32(0x80040FE4, 21);
         w_u32(0x80040FE8, 11);
         return 11;
+#endif
     }
     state = r_u32(0x80040FE4);
     switch (state)
     {
     case 4:
         SsSetSerialVol(0, 0, 0);
+#ifndef CW_EXTRACTED_XA
         result = r_u32(current + 36);
         if (result)
         {
@@ -940,24 +950,39 @@ select_current:
         }
         else
             CdControlF(2, (uint8 *)psx_addr(current + 8, sizeof(CdlLOC)));
+#endif
         w_u32(0x80040FE4, 9);
         return 9;
     case 9:
+#ifndef CW_EXTRACTED_XA
         filter[0] = 1;
         filter[1] = (uint8)r_u32(current + 12);
         CdControlF(13, filter);
+#endif
         w_u32(0x80040FE4, 10);
         return 10;
     case 10:
+#ifdef CW_EXTRACTED_XA
+        if (!game_stream_file_start(current)) {
+            w_u32(0x80040FE4, 21);
+            w_u32(0x80040FE8, 11);
+            return 11;
+        }
+#else
         CdControlF(27, NULL);
+#endif
         w_u32(current + 40, 5);
         w_u32(0x80040FE4, 5);
         w_u32(0x80033D10, 3000);
         return 3000;
     case 5:
+#ifdef CW_EXTRACTED_XA
+        if (game_stream_file_ready())
+#else
         CdControlF(1, NULL);
         status = CdStatus();
         if ((status & 0x60) == 0x20)
+#endif
         {
             result = r_u32(current + 40) - 1;
             w_u32(current + 40, result);
@@ -966,12 +991,15 @@ select_current:
             w_u32(0x80040FE4, 6);
             previous = r_u32(current + 36);
             result = r_u32(current + 32);
-            status = r_u8(current + 48);
+            ready = r_u8(current + 48);
             w_u32(current + 16, 0);
             w_u32(current + 36, 0);
             result -= previous;
             w_u32(current + 40, result);
-            if (status)
+#ifdef CW_EXTRACTED_XA
+            w_u32(current + 40, game_stream_file_remaining());
+#endif
+            if (ready)
             {
                 result = (uint32)message_add((char *)psx_addr(current + 48, 268), 0,
                     (uint32)(r_s32(current + 40) / 300));
@@ -979,6 +1007,9 @@ select_current:
             }
             return result;
         }
+#ifdef CW_EXTRACTED_XA
+        return 0;
+#else
         if (status & 0x10)
         {
             w_u32(0x80040FE4, 21);
@@ -1000,9 +1031,11 @@ select_current:
             w_u32(0x80041EF4, 0);
         }
         return 21;
+#endif
     default:
         break;
     }
+#ifndef CW_EXTRACTED_XA
     if (r_u32(0x80041EF0) == 1)
     {
         CdControlF(1, NULL);
@@ -1014,6 +1047,9 @@ select_current:
         }
     }
     w_u32(current + 40, r_u32(current + 40) - r_u32(0x80040FE0));
+#else
+    game_stream_file_advance(current);
+#endif
     state = r_u32(0x80040FE4);
     if (state == 6 || state == 7)
     {
@@ -1063,8 +1099,12 @@ select_current:
         SsSetSerialVol(0, (sint16)volume, (sint16)volume);
         if (r_s32(current + 40) < 0 || !r_u32(current + 16))
         {
-            if (r_u32(0x80040FF0) == 1)
+            if (r_u32(0x80040FF0) == 1) {
                 w_u32(0x80040FE4, 8);
+#ifdef CW_EXTRACTED_XA
+                CdControlF(CdlPause, NULL);
+#endif
+            }
             first = r_u32(current + 24) << 1;
             second = r_u32(current + 40);
             result = r_u32(current + 32);
